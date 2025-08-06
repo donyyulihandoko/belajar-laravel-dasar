@@ -2,7 +2,7 @@
 
 return [
     'author' => [
-        'first' => 'Dony',
+        'first' => 'Dony Yuli',
         'last' => 'Handoko'
     ],
     'email' => 'officialdonyyulihandoko@gmail.com'
