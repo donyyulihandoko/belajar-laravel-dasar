@@ -14,7 +14,7 @@ class ConfigurationTest extends TestCase
         $lastName = config('contoh.author.last');
         $email = config('contoh.email');
 
-        $this->assertEquals('Dony', $firstName);
+        $this->assertEquals('Dony Yuli', $firstName);
         $this->assertEquals('Handoko', $lastName);
         $this->assertEquals('officialdonyyulihandoko@gmail.com', $email);
     }
