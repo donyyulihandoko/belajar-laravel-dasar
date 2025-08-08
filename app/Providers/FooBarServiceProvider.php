@@ -5,10 +5,17 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Data\Foo;
 use App\Data\Bar;
+use App\Services\HelloService;
+use App\Services\HelloServiceImpl;
+use Illuminate\Contracts\Support\DeferrableProvider;
 
-
-class FooBarServiceProvider extends ServiceProvider
+class FooBarServiceProvider extends ServiceProvider implements DeferrableProvider
 {
+    // dependency injection menggunakan property singleton
+    public array $singletons = [
+        HelloService::class => HelloServiceImpl::class
+    ];
+
     /**
      * Register services.
      *
@@ -16,6 +23,7 @@ class FooBarServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // echo 'FooBarServiceProvider';
         // dependency injection service container Foo::class
         $this->app->singleton(Foo::class, function ($app) {
             return new Foo();
@@ -36,5 +44,10 @@ class FooBarServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+    }
+
+    public function provides()
+    {
+        return [HelloService::class, Foo::class, Bar::class];
     }
 }
