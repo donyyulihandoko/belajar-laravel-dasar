@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use tidy;
 
 class InputControllerTest extends TestCase
 {
@@ -59,5 +60,52 @@ class InputControllerTest extends TestCase
             ->assertSeeText('Macbook Pro')
             ->assertSeeText('name')
             ->assertSeeText('Samsung Galaksi');
+    }
+
+    public function testInputType()
+    {
+        $this->post('/input.type', [
+            'name' => 'Dony',
+            'married' => 'false',
+            'birthday' => '2000-07-18'
+        ])->assertSeeText('Dony')
+            ->assertSeeText('false')
+            ->assertSeeText('2000-07-18');
+    }
+
+    public function testInputOnly()
+    {
+        $this->post('/input/hello/only', [
+            'name' => [
+                'first' => 'Dony',
+                'middle' => 'Yuli',
+                'last' => 'Handoko'
+            ]
+        ])->assertSeeText('Dony')
+            ->assertSeeText('Yuli')
+            ->assertDontSeeText('Handoko');
+    }
+
+    public function testInputExcept()
+    {
+        $this->post('/input.except', [
+            'username' => 'dony',
+            'password' => 'rahasia',
+            'admin' => 'true'
+        ])->assertSeeText('dony')
+            ->assertSeeText('rahasia')
+            ->assertDontSeeText('admin');
+    }
+
+    public function testInputMerge()
+    {
+        $this->post('/input.merge', [
+            'username' => 'dony',
+            'password' => 'rahasia',
+            'admin' => 'true'
+        ])->assertSeeText('dony')
+            ->assertSeeText('rahasia')
+            ->assertSeeText('admin')
+            ->assertSeeText('false');
     }
 }

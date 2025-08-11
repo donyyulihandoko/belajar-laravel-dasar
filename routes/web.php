@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\HelloController;
 use App\Http\Controllers\InputController;
+use App\Http\Controllers\ResponseController;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\Console\Input\Input;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,3 +90,21 @@ Route::post('/request/nested', [InputController::class, 'inputNested'])->name('i
 Route::post('/input/hello/all', [InputController::class, 'allInput'])->name('input.all');
 
 Route::post('/input/array', [InputController::class, 'inputArray'])->name('input.array');
+
+// input type
+Route::post('/input/hello/type', [InputController::class, 'inputType'])->name('input.type');
+// input only dan except
+Route::post('/input/hello/only', [InputController::class, 'inputOnly'])->name('input.only');
+Route::post('/input/hello/except', [InputController::class, 'inputExcept'])->name('input.except');
+
+// input merge
+Route::post('/input/hello/merge', [InputController::class, 'inputMerge'])->name('input.merge');
+
+// input file
+Route::post('/file/upload', [FileController::class, 'uploadFile'])->name('upload.file');
+
+// route response
+Route::post('/response/hello', [ResponseController::class, 'response']);
+
+// routing response header
+Route::post('/response/header', [ResponseController::class, 'header']);
