@@ -2,9 +2,12 @@
 
 use App\Http\Controllers\CookieController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\HelloController;
 use App\Http\Controllers\InputController;
+use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\ResponseController;
+use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Console\Input\Input;
 
@@ -102,7 +105,7 @@ Route::post('/input/hello/except', [InputController::class, 'inputExcept'])->nam
 Route::post('/input/hello/merge', [InputController::class, 'inputMerge'])->name('input.merge');
 
 // input file
-Route::post('/file/upload', [FileController::class, 'uploadFile'])->name('upload.file');
+Route::post('/file/upload', [FileController::class, 'uploadFile'])->name('upload.file')->withoutMiddleware(VerifyCsrfToken::class);
 
 // route response
 Route::get('/response/hello', [ResponseController::class, 'response']);
@@ -110,11 +113,39 @@ Route::get('/response/hello', [ResponseController::class, 'response']);
 // routing response header
 Route::get('/response/header', [ResponseController::class, 'header']);
 
-Route::get('/response/type/view', [ResponseController::class, 'responseView']);
-Route::get('/response/type/json', [ResponseController::class, 'responseJson']);
-Route::get('/response/type/file', [ResponseController::class, 'responseFile']);
-Route::get('/response/type/donwload', [ResponseController::class, 'responseDonwload']);
+Route::prefix('/response/type')->group(function () {
+    Route::get('/view', [ResponseController::class, 'responseView']);
+    Route::get('/json', [ResponseController::class, 'responseJson']);
+    Route::get('/file', [ResponseController::class, 'responseFile']);
+    Route::get('/donwload', [ResponseController::class, 'responseDonwload']);
+});
 
-Route::get('/cookie/set', [CookieController::class, 'createCookie']);
-Route::get('/cookie/get', [CookieController::class, 'getCookie']);
-Route::get('/cookie/clear', [CookieController::class, 'clearCookie']);
+
+
+Route::controller(CookieController::class)->group(function () {
+    Route::get('/cookie/set',  'createCookie');
+    Route::get('/cookie/get',  'getCookie');
+    Route::get('/cookie/clear',  'clearCookie');
+});
+
+
+Route::get('/redirect/to', [RedirectController::class, 'redirectTo']);
+Route::get('/redirect/from', [RedirectController::class, 'redirectFrom']);
+Route::get('/redirect/name', [RedirectController::class, 'redirectName']);
+Route::get('/redirect/name/{name}', [RedirectController::class, 'redirectHello'])->name('redirect.hello');
+Route::get('/redirect/action', [RedirectController::class, 'redirectAction']);
+Route::get('/redirect/away', [RedirectController::class, 'redirectAway']);
+
+Route::middleware(['contoh:PZN,401'])->prefix('/middleware')->group(function () {
+    Route::get('/api', function () {
+        return 'OK';
+    });
+
+    Route::get('/group', function () {
+        return 'GROUP';
+    });
+});
+
+
+Route::get('/form', [FormController::class, 'form']);
+Route::post('/form', [FormController::class, 'postForm']);

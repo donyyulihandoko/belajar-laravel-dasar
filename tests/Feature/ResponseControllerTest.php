@@ -49,6 +49,6 @@ class ResponseControllerTest extends TestCase
     public function testResponseDonwload()
     {
         $this->get('/response/type/donwload')
-            ->assertDownload('dony.png');
+            ->assertDownload('activity.png');
     }
 }
