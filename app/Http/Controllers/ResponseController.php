@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ResponseController extends Controller
 {
@@ -25,5 +27,36 @@ class ResponseController extends Controller
                 'Author' => 'Dony Yuli Handoko',
                 'App' => 'Laravel'
             ]);
+    }
+
+    public function responseView(Request $request): Response
+    {
+        return response()
+            ->view('hello', [
+                'name' => 'dony'
+            ]);
+    }
+
+    public function responseJson(): JsonResponse
+    {
+        $body = [
+            'firstName' => 'Dony',
+            'middleName' => 'Yuli',
+            'lastName' => 'Handoko'
+        ];
+        return response()
+            ->json($body);
+    }
+
+    public function responseFile(): BinaryFileResponse
+    {
+        return response()
+            ->file(\storage_path('app/public/pictures/activity.png'));
+    }
+
+    public function responseDonwload(): BinaryFileResponse
+    {
+        return response()
+            ->download(\storage_path('app/public/pictures/activity.png'));
     }
 }
