@@ -1,6 +1,8 @@
 <?php
 
+use App\Exceptions\ValidationException;
 use App\Http\Controllers\CookieController;
+use App\Http\Controllers\SessionController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\HelloController;
@@ -9,7 +11,10 @@ use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\ResponseController;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\Console\Input\Input;
+
+use function PHPUnit\Framework\returnSelf;
 
 /*
 |--------------------------------------------------------------------------
@@ -133,6 +138,13 @@ Route::get('/redirect/to', [RedirectController::class, 'redirectTo']);
 Route::get('/redirect/from', [RedirectController::class, 'redirectFrom']);
 Route::get('/redirect/name', [RedirectController::class, 'redirectName']);
 Route::get('/redirect/name/{name}', [RedirectController::class, 'redirectHello'])->name('redirect.hello');
+
+Route::get('/redirect/named', function () {
+    // return route('redirect.hello', ['name' => 'name']);
+    // return url()->route('redirect.hello', ['name' => 'name']);
+    return URL::route('redirect.hello', ['name' => 'Dony']);
+});
+
 Route::get('/redirect/action', [RedirectController::class, 'redirectAction']);
 Route::get('/redirect/away', [RedirectController::class, 'redirectAway']);
 
@@ -149,3 +161,41 @@ Route::middleware(['contoh:PZN,401'])->prefix('/middleware')->group(function () 
 
 Route::get('/form', [FormController::class, 'form']);
 Route::post('/form', [FormController::class, 'postForm']);
+
+Route::get('/url/action', function () {
+    // return action([FormController::class, 'form']);
+    // return url()->action([FormController::class, 'form']);
+    return URL::action([FormController::class, 'form']);
+});
+
+Route::get('/url/current', function () {
+    return URL::full();
+});
+
+
+Route::get('/session/create', [SessionController::class, 'createSession']);
+Route::get('/session/get', [SessionController::class, 'getSession']);
+
+Route::get('/error/sample', function () {
+    throw new Exception();
+});
+Route::get('/error/manual', function () {
+    report(new Exception());
+    return 'OK';
+});
+
+Route::get('/error/validation', function () {
+    throw new ValidationException("Validation Exception");
+});
+
+Route::get('/abort/400', function () {
+    abort(400, "Ups Validation Error");
+});
+
+Route::get('/abort/401', function () {
+    abort(401);
+});
+
+Route::get('/abort/500', function () {
+    abort(500);
+});
